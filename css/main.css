@@ -862,7 +862,7 @@ input.multiselect_checkbox {
   margin:auto;
   transform: translate3d(-2000px, 0, 0);
   transition: all 0.5s ease;
-  z-index:1000;
+  z-index:-10;
   width:600px;
   display: -webkit-box;
   display: -moz-box;
@@ -880,6 +880,7 @@ input.multiselect_checkbox {
 .tasks.active {
   transform: translate3d(0, 0, 0); 
   transition: all 0.5s ease;
+  z-index:1000;
 }
 .tasks-container {
   background:white;
@@ -906,7 +907,7 @@ input.multiselect_checkbox {
   margin:auto;
   transform: translate3d(-2000px, 0, 0);
   transition: all 0.5s ease;
-  z-index:1000;
+  z-index:-10;
   width:600px;
   
   background:white;
@@ -916,6 +917,7 @@ input.multiselect_checkbox {
 .solution.active {
   transform: translate3d(0, 0, 0); 
   transition: all 0.5s ease;
+  z-index:1000;
 }
 .solution-container {
   background:white;
