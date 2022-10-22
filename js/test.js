@@ -27,9 +27,8 @@ function overlay_click () {
 	setTimeout (()=> {
 		overlay.classList.toggle('active')	
 	}, 200)
+		overlay.removeEventListener('click', overlay_click)
 	
-	overlay.removeEventListener('click', overlay_click)
-	console.log('fff')
 }
 	for (let i=0; i<showformbtn.length; i++) {
 		showformbtn[i].addEventListener('click', ()=>{
@@ -63,18 +62,16 @@ show_solution.addEventListener('click', ()=>{
 var reviews_block=document.querySelector('.reviews-wraper') 
 function del_review () {
 	var block_target=event.target
-		console.log(block_target)
+		//console.log(block_target)
 		if (block_target.classList.contains('btn-del')) {
 			var del_id=block_target.getAttribute('data-id')
 			var del_action=block_target.getAttribute('data-action')
-			console.log(del_id + ' ' + del_action)
 			delete_review_from_page (del_id)
 			//return
 			var deldata = new FormData()
 			deldata.append('action', del_action)
 			deldata.append('id', del_id)
-			console.log(deldata)
-			
+						
 			var request_del = new XMLHttpRequest();
 	    	request_del.open('POST', 'engine.php');
 	    	request_del.send(deldata)
@@ -99,7 +96,6 @@ function del_review () {
 	    		}
 	    		else {
 	    			//console.log('Ответ сервера: ' + this.responseText)	
-	    			//console.log(this)
 	    		}
 	    	})
 	    	
