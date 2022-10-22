@@ -13,14 +13,102 @@ if (inputs.length) {
 		})
 	}
 }
+
+
 //show form 
 const showformbtn=Array.from(document.querySelectorAll('.btn-add'))
 const reviewform=document.querySelector('.form-wrapper')
+const overlay=document.querySelector('.overlay')
+function overlay_click () {
+	
+	if (reviewform.classList.contains('active')) reviewform.classList.toggle('active')
+	if (tasks.classList.contains('active')) tasks.classList.toggle('active')
+	if (solution.classList.contains('active')) solution.classList.toggle('active')
+	setTimeout (()=> {
+		overlay.classList.toggle('active')	
+	}, 200)
+	
+	overlay.removeEventListener('click', overlay_click)
+	console.log('fff')
+}
 	for (let i=0; i<showformbtn.length; i++) {
 		showformbtn[i].addEventListener('click', ()=>{
+
 			reviewform.classList.toggle('active')
+			overlay.classList.toggle('active')
+			overlay.addEventListener('click', overlay_click)
+			
 		})
 	}
+//show tasks
+const show_tasks=document.querySelector('#show-tasks')
+const tasks=document.querySelector('.tasks')
+show_tasks.addEventListener('click', ()=>{
+	event.preventDefault();
+	tasks.classList.toggle('active')
+	overlay.classList.toggle('active')
+	overlay.addEventListener('click', overlay_click)
+})
+//show solution
+const show_solution=document.querySelector('#show-solution')
+const solution=document.querySelector('.solution')
+show_solution.addEventListener('click', ()=>{
+	event.preventDefault();
+	solution.classList.toggle('active')
+	overlay.classList.toggle('active')
+	overlay.addEventListener('click', overlay_click)
+})
+
+//del review
+var reviews_block=document.querySelector('.reviews-wraper') 
+function del_review () {
+	var block_target=event.target
+		console.log(block_target)
+		if (block_target.classList.contains('btn-del')) {
+			var del_id=block_target.getAttribute('data-id')
+			var del_action=block_target.getAttribute('data-action')
+			console.log(del_id + ' ' + del_action)
+			delete_review_from_page (del_id)
+			//return
+			var deldata = new FormData()
+			deldata.append('action', del_action)
+			deldata.append('id', del_id)
+			console.log(deldata)
+			
+			var request_del = new XMLHttpRequest();
+	    	request_del.open('POST', 'engine.php');
+	    	request_del.send(deldata)
+	    	request_del.addEventListener('readystatechange', function() {
+	    		if (this.readyState === 4 && this.status === 200) {
+	    			console.log('Ответ сервера: ' + this.responseText)
+	    			console.log(this)
+	    			// выводим уведомление
+	    			modalwindow.classList.toggle ('active')
+			        const $mod_inside = document.createElement('div');
+			        $mod_inside.classList='modal-inside'
+	    			$mod_inside.innerHTML='<p>Отзыв с id='+ del_id + ' удален на сервере из БД</p>'
+			        modalwindow.append($mod_inside)
+			        setTimeout(()=>{
+			        	modalwindow.classList.toggle('active')
+			        	$mod_inside.remove()
+			    	}, 2000)
+			    	// удаляем отзыв со страницы
+			    	delete_review_from_page (del_id)
+			    	
+
+	    		}
+	    		else {
+	    			//console.log('Ответ сервера: ' + this.responseText)	
+	    			//console.log(this)
+	    		}
+	    	})
+	    	
+			
+		}
+}
+	reviews_block.addEventListener('click', del_review)
+
+
 //form submit
 const formsubmit=document.querySelector('.review-form-add')
 formsubmit.addEventListener('submit', function(event) {
@@ -53,6 +141,10 @@ formsubmit.addEventListener('submit', function(event) {
 	        for (var key in resdata) {
 	          console.log (key + ' - ' + resdata[key])
 	        }
+	        // убираем форму 
+	        reviewform.classList.toggle('active')
+		    overlay.classList.toggle('active')
+		    // открываем уведомление
 	        modalwindow.classList.toggle ('active')
 	        const $mod_inside = document.createElement('div');
 	        $mod_inside.classList='modal-inside'
@@ -61,6 +153,7 @@ formsubmit.addEventListener('submit', function(event) {
 	        	modalwindow.append($mod_inside)
 	        	setTimeout(()=>{
 	        	modalwindow.classList.toggle('active')
+	        	 $mod_inside.remove()
 	    		}, 3000)
 	    		setTimeout(()=>{
 		        	reviewform.classList.toggle('active')
@@ -72,15 +165,15 @@ formsubmit.addEventListener('submit', function(event) {
 	       
 		        $mod_inside.innerHTML='<p>Ваш отзыв добавлен. Через секунду он появится на странице.</p>'
 		        modalwindow.append($mod_inside)
+		        
 		        setTimeout(()=>{
 		        	modalwindow.classList.toggle('active')
+		        	$mod_inside.remove()
 		    	}, 3000)
-		        setTimeout(()=>{
-		        	reviewform.classList.toggle('active')
-		    	}, 4000)
+		       
 		    	setTimeout(()=>{
 		        add_new_review_on_page(resdata)
-		    	}, 5000)
+		    	}, 4000)
 	    	}
 
 	      }
@@ -236,7 +329,8 @@ function onSuccess(formNode) {
 function add_new_review_on_page(resdata) {
 	const reviewsList=document.querySelector('.reviews-wraper')
 	const $new_rev = document.createElement('div');
-	$new_rev.className='reviews-item new'
+	$new_rev.className='reviews-item'
+	$new_rev.setAttribute('data-id', resdata['id'])
 	var outer='<h3>'+resdata['name']+'</h3>'
 	outer+='<div class="reviews-item-subtitle">'+resdata['surname']+' '+resdata['middle_name']+'</div>'
 	outer+='<div class="reviews-category">Категория отзыва: <span>'
@@ -245,6 +339,21 @@ function add_new_review_on_page(resdata) {
 	outer+='</span></div>'
 	outer+='<div class="reviews-email"><a href="#">'+resdata['email']+'</a></div>'
 	outer+='<p>'+resdata['message']+'</p>'
+	outer+='<button class="btn-del" data-id="'+resdata['id']+'" data-action="delete">Удалить отзыв</button>'
 	$new_rev.innerHTML=outer
 	reviewsList.append($new_rev)
+	reviews_block=document.querySelector('.reviews-wraper') 
+}
+function delete_review_from_page (rev_id) {
+	const review_to_delete=document.querySelector('[data-id="'+rev_id+'"')
+	console.log(review_to_delete)
+	review_to_delete.classList.add('item_removed')
+	//review_to_delete.classList.add('item_height')
+	setTimeout(()=>{
+		review_to_delete.classList.add('item_height')
+		
+	}, 500)
+	setTimeout(()=>{
+	review_to_delete.remove()
+	}, 1000)
 }

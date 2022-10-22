@@ -21,11 +21,17 @@ class database {
 		public function query_multi_params($sql, $params = [])
 		{
 			$stmt = $this->db->prepare($sql);
+			if ( !empty($params) ) {
+				foreach ($params as $value) {
+					$stmt->bindValue("?", $value);
+				}
+			}
 			$stmt->execute($params);
 			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		}
 		public function last_id() {
 			return $this->db->lastInsertId();
 		}
+		
 }
 ?>

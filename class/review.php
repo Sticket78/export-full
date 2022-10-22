@@ -13,6 +13,11 @@ class review {
 	function delete_category ($cat_id) { // to do
 	}
 	function delete_review ($id) { // to do
+		$query="delete from reviews_cat_values where review_id=:id";
+		$params = ['id' => $id];
+		$this->conn->query($query, $params); // удаляем из reviews_cat_values значения категорий для отзыва с id
+		$query="delete from reviews where id=:id";
+		$this->conn->query($query, $params); // удаляем сам отзыв с id
 	}
 	function get_review_cats_values($id) { // получаем названия привязанных к отзыву категорий по id отзыва
 		$query="select cat_name from reviews_cat_values join categories cat on cat_id=cat.id where review_id=:id;";
@@ -23,11 +28,11 @@ class review {
 	function add_review_cats_value($id, $prod_cats) {
 		//после добавления отзыва, добавляем в reviews_cat_values id привязанных категорий для данного отзыва по id отзыва
 		//категории из формы названиями, а в таблицу пишем id категории
-		$query_in=str_repeat('?,', count($prod_cats)-1).'?';
+		//$query_in=str_repeat('?,', count($prod_cats)-1).'?';
 		foreach($prod_cats as $cats) {
 		$arr_in[]=$cats;
 		}
-		$in  = str_repeat('?,', count($prod_cats) - 1) . '?';
+		$in  = implode(',', array_fill(0, count($prod_cats), '?'));//str_repeat('?,', count($prod_cats) - 1) . '?';
 		$query="insert into reviews_cat_values (review_id, cat_id) select ?, categories.id from categories where categories.cat_name IN ($in);";
 		$params=array_merge([$id], $arr_in);
 		//print $query;

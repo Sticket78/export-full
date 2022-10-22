@@ -41,8 +41,16 @@ try {
 			$add_review['id']=$new_id; // добавляем к массиву id отзыва в базе
 			echo json_encode($add_review, JSON_UNESCAPED_UNICODE);
 			break;
+		case 'delete':
+			//
+			$id=$_POST["id"];
+			$check=$review->delete_review($id);
+			$result=array("del"=>'1', "responseText"=>"deleted", "id"=>$id);
+			echo json_encode($result, JSON_UNESCAPED_UNICODE);
+			break;
         default:
-            $result = 'unknown action';
+            $result = array ("error"=>'unknown action', "action"=>$action);
+			echo json_encode($result, JSON_UNESCAPED_UNICODE);
             break;
     }
  
