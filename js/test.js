@@ -347,9 +347,7 @@ function add_new_review_on_page(resdata) {
 }
 function delete_review_from_page (rev_id) {
 	const review_to_delete=document.querySelector('[data-id="'+rev_id+'"')
-	console.log(review_to_delete)
 	review_to_delete.classList.add('item_removed')
-	//review_to_delete.classList.add('item_height')
 	setTimeout(()=>{
 		review_to_delete.classList.add('item_height')
 		
