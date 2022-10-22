@@ -161,6 +161,7 @@ body {
   background-color: #fff;
   font: 400 18px/1.18em 'Roboto', sans-serif;
   color: #64677F;
+  z-index:1;
 }
 a:not([class]) {
   -webkit-text-decoration-skip: ink;
@@ -413,14 +414,12 @@ header {
 }
 /* form add review */
 .form-wrapper {
-  position:absolute;
+  display:none;
   background:white;
-   margin:0 auto;
-   #max-height:0;
-   overflow:hidden;
-    
-   max-width:600px;
-   position:fixed;
+  margin:0 auto;
+  overflow:hidden;
+  max-width:600px;
+  position:fixed;
   height:90vh;
   top:0;
   bottom:0;
@@ -852,7 +851,7 @@ input.multiselect_checkbox {
   
 }
 .tasks {
-
+  display:none;
   position:fixed;
   height:90vh;
   top:0;
@@ -897,7 +896,7 @@ input.multiselect_checkbox {
   margin-bottom:6px;
 }
 .solution{
-
+  display: none;
   position:fixed;
   height:90vh;
   top:0;

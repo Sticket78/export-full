@@ -58,6 +58,11 @@ show_solution.addEventListener('click', ()=>{
 	overlay.addEventListener('click', overlay_click)
 })
 
+document.addEventListener("DOMContentLoaded", ()=>{
+	solution.style.display='block'
+	tasks.style.display='block'
+	reviewform.style.display='block'
+})
 //del review
 var reviews_block=document.querySelector('.reviews-wraper') 
 function del_review () {
